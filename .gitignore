@@ -22,3 +22,4 @@ yarn-error.log
 /.vscode
 /.zed
 /storage/bin/procesos/target
+storage/bin/procesos/JSON_TIENDA.json
