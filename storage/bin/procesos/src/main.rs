@@ -2,8 +2,9 @@ use std::env;
 use std::process::Command;
 use std::process::exit;
 use chrono::Utc;
+use std::io::{self, Write};
 
-fn main() {
+fn main(){
 
     let query: String = String::from("    
     SELECT JSON_OBJECT(
@@ -32,7 +33,14 @@ fn main() {
     // success?
     if commando.status.success() {
         // Si la ejecución fue exitosa, mostramos la salida
+
         println!("{}", String::from_utf8_lossy(&commando.stdout));
+        println!("Presiona cualquier tecla para terminar...");
+        // Hacer que el programa espere la entrada del usuario.
+        let mut input = String::new();
+        io::stdin().read_line(&mut input).expect("Falló la lectura");
+        exit(0);
+
     } else {
         // Si ocurrió un error, mostramos el error
         eprintln!("Error al ejecutar el comando MySQL:");
