@@ -1,9 +1,11 @@
 use rand::{self, Rng};
 use std::env;
 use std::process::Command;
+use std::process;
 use std::process::exit;
+use std::io::{self, Write};
 
-pub fn get_token(lon: usize, chars_especials: bool )->String{
+fn get_token(lon: usize, chars_especials: bool )->String{
 
     // Generador de strings seguros!
     let mut clve: String = String::from("");
@@ -32,11 +34,10 @@ pub fn get_token(lon: usize, chars_especials: bool )->String{
     }
     
     clve
-    
 }
 
 
-pub fn get_name()->String{
+fn get_name()->String{
     let mut rng: rand::prelude::ThreadRng = rand::rng();
     let mut cadena:String = String::from("");
     let names: Vec<&str> = vec![
@@ -52,7 +53,7 @@ pub fn get_name()->String{
     cadena
 }
 
-pub fn get_mdl_lst_name()->String{
+fn get_mdl_lst_name()->String{
     let mut rng: rand::prelude::ThreadRng = rand::rng();
     let mut cadena:String = String::from("");
     let mdl_lst_name: Vec<&str> = vec![
@@ -72,7 +73,7 @@ pub fn get_mdl_lst_name()->String{
     cadena
 }        
 
-pub fn get_addres()->String{
+fn get_addres()->String{
     let mut rng: rand::prelude::ThreadRng = rand::rng();
     let mut cadena:String = String::from("");
     let address: Vec<&str> = vec![
@@ -94,7 +95,7 @@ pub fn get_addres()->String{
     cadena
 }        
     
-pub fn get_movil()->String{
+fn get_movil()->String{
     let mut rng: rand::prelude::ThreadRng = rand::rng();
     let mut cadena:String = String::from("");
     let movil: Vec<&str> = vec![
@@ -114,7 +115,7 @@ pub fn get_movil()->String{
     cadena
 }  
 
-pub fn get_email()->String{
+fn get_email()->String{
     let mut rng: rand::prelude::ThreadRng = rand::rng();
     let mut cadena:String = String::from("");
     let email: Vec<&str> = vec![
@@ -134,7 +135,7 @@ pub fn get_email()->String{
     cadena
 }  
 
-pub fn get_date(separador: String)->String{
+fn get_date(separador: String)->String{
 
     let mut rng: rand::prelude::ThreadRng = rand::rng();
     let mut cadena:String = String::from("");
@@ -164,7 +165,7 @@ pub fn get_date(separador: String)->String{
     cadena
 }  
 
-pub fn get_rand_words()->String{
+fn get_rand_words()->String{
     let mut rng: rand::prelude::ThreadRng = rand::rng();
     let mut cadena:String = String::from("");
     let word: Vec<&str> = vec!["sol", "estrella", "luna", "gato", "perro", "rojo", "flor", 
@@ -179,7 +180,7 @@ pub fn get_rand_words()->String{
 }
 
    
-pub fn get_inserts(db: String, tabla:String, num_reg:usize){
+fn get_inserts(db: String, tabla:String, num_reg:usize){
 
     if num_reg < 200 {
         insertor(num_reg);
@@ -202,7 +203,7 @@ pub fn get_inserts(db: String, tabla:String, num_reg:usize){
 
 }
 
-pub fn insertor(num_reg: usize){    
+fn insertor(num_reg: usize){    
     // INSERT MYSQL
 
     let db = "pltfrm_laravel" ;
@@ -255,3 +256,64 @@ pub fn insertor(num_reg: usize){
             }
 
 }
+
+fn main(){
+    
+    let mut longitud: usize = 0;
+
+    println!("\n\n=======================================================================");
+    println!("||          SEEDER TABLA USER                                        ||");
+    println!("=======================================================================");
+
+    let menu = "\npresiona (1) para ingresar: < 200 registros:\npresiona (2) para ingresar: 200 registros:\npresiona (3) para ingresar: 400 registros:\npresiona (4) para ingresar: 800 registros:\npresiona (5) para ingresar: 1000 registros:\npresiona (6) para ingresar: 5000 registros:\npresiona (7) para ingresar: 1000 registros:\npresiona (8) para ingresar: 5000 registros:\npresiona (9) para ingresar: 1000 registros:\nIngresa tu opción: ";
+    print!("{}",menu);
+    
+    io::stdout()
+    .flush()
+    .unwrap(); // Asegura que el mensaje se imprima antes de esperar entrada
+
+    let mut opcion = String::new();
+    let mut num_opc:usize = 0;
+
+    
+    io::stdin().read_line(&mut opcion).unwrap();
+    opcion = opcion.trim().to_string();
+    match opcion.parse::<usize>(){
+        Ok(numero)=> num_opc = numero, 
+        Err(e) =>{ 
+            println!("Error a indicar una opcion, se encontro un opcion diferente a las indicadas");
+            process::exit(1);
+        }
+    }
+
+    if num_opc == 0 || num_opc >= 10 {
+        println!("Error a indicar una opcion, se encontro un opcion diferente a las indicadas");
+            process::exit(1);
+    }
+
+    match num_opc {
+        1 => get_inserts("db_domi".to_string(), "tabla_domi".to_string(), num_opc),
+        2 => get_inserts("db_domi".to_string(), "tabla_domi".to_string(), 200),
+        3 => get_inserts("db_domi".to_string(), "tabla_domi".to_string(), 400),
+        4 => get_inserts("db_domi".to_string(), "tabla_domi".to_string(), 800),
+        5 => get_inserts("db_domi".to_string(), "tabla_domi".to_string(), 1000),
+        6 => get_inserts("db_domi".to_string(), "tabla_domi".to_string(), 5000),
+        7 => get_inserts("db_domi".to_string(), "tabla_domi".to_string(), 1000),
+        8 => get_inserts("db_domi".to_string(), "tabla_domi".to_string(), 5000),
+        9 => get_inserts("db_domi".to_string(), "tabla_domi".to_string(), 1000),
+        _ => println!("nuca va apasar -  te lo juro!"), 
+    }
+
+}
+
+/*
+(1) para ingresar: < 200 registros:
+presiona (2) para ingresar: 200 registros:
+presiona (3) para ingresar: 400 registros:
+presiona (4) para ingresar: 800 registros:
+presiona (5) para ingresar: 1000 registros:
+presiona (6) para ingresar: 5000 registros:
+presiona (7) para ingresar: 1000 registros:
+presiona (8) para ingresar: 5000 registros:
+presiona (9) para ingresar: 1000 registros:
+*/

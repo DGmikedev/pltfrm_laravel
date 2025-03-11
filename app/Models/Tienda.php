@@ -13,7 +13,7 @@ class Tienda extends Model
         'name',
         'address',
         'deptos',
-        'sells_gral'
-        'average_mont'
+        'sells_gral',
+        'average_mont',
     ];
 }
