@@ -1,83 +1,257 @@
+use rand::{self, Rng};
 use std::env;
 use std::process::Command;
 use std::process::exit;
-use chrono::Utc;
-use std::io::{self, Write};
 
-fn main(){
+pub fn get_token(lon: usize, chars_especials: bool )->String{
 
-    let query: String = String::from("    
-    SELECT JSON_OBJECT(
-        \"id\", id,
-        \"created_at\", created_at,
-        \"updated_at\", updated_at,
-        \"id_companie\", id_companie,
-        \"zone\", zone,
-        \"edo\", edo,
-        \"name\", name,
-        \"address\", address,
-        \"deptos\", deptos,
-        \"sells_gral\", sells_gral,
-        \"average_mont\", average_mont ) as ''
-         FROM pltfrm_laravel.tiendas; ");
-
-
-    let commando = Command::new("mysql")
-    .arg("-u")
-    .arg("root")
-    .arg("-e")
-    .arg(query)
-    .output()
-    .expect("Falló al ejecutar el comando");
-
-    // success?
-    if commando.status.success() {
-        // Si la ejecución fue exitosa, mostramos la salida
-
-        println!("{}", String::from_utf8_lossy(&commando.stdout));
-        println!("Presiona cualquier tecla para terminar...");
-        // Hacer que el programa espere la entrada del usuario.
-        let mut input = String::new();
-        io::stdin().read_line(&mut input).expect("Falló la lectura");
-        exit(0);
-
-    } else {
-        // Si ocurrió un error, mostramos el error
-        eprintln!("Error al ejecutar el comando MySQL:");
-        eprintln!("{}", String::from_utf8_lossy(&commando.stderr));
-        exit(1); // Salir con código de error 1
-    }
-
-   //  let args: Vec<_> = env::args().collect();
-   //  for i in args.iter(){ println!("{i:?}") }
-
-
-    let today = Utc::now().date();
-    // Formatear la fecha en el formato ISO 8601 (YYYY-MM-DD)
-    let fecha = today.format("%Y-%m-%d").to_string();
+    // Generador de strings seguros!
+    let mut clve: String = String::from("");
+    let mut rng: rand::prelude::ThreadRng = rand::rng();
     
+    let characters: [&str;67] =[
+    "A","B","C","D","E","F","G","H","I","J",
+    "K","L","M","N","O","P","Q","R","S","T",
+    "U","V","W","X","Y","Z","a","b","c","d",
+    "e","f","g","h","i","j","k","l","m","n",
+    "o","p","q","r","s","t","u","v","w","x",
+    "y","z","0","1","2","3","4","5","6","7",
+    "8","9","!","@","#","$","%"
+    ];
+    
+    for _i in 0..= lon {
 
-   // println!("{}", fecha);
+        if chars_especials{
+            let indx = rng.random_range(0..=66);
+        clve.push_str(characters[indx]);
+        }else{
+            let indx = rng.random_range(0..=52);
+        clve.push_str(characters[indx]);
+        }
+    
+    }
+    
+    clve
+    
+}
+
+
+pub fn get_name()->String{
+    let mut rng: rand::prelude::ThreadRng = rand::rng();
+    let mut cadena:String = String::from("");
+    let names: Vec<&str> = vec![
+            "Juan", "James", "María", "John", "Maria", "Emily", "Juan", "Emily","Daniel", 
+            "Carlos", "Michael", "Ana", "Michael", "Ana", "Sarah", "David", "Ashley",
+            "Luis", "David", "Laura", "Christopher","Pedro", "Christopher", "Sofía", 
+            "Sofia", "Jessica", "Michael", "Jessica", "Matthew", "Laura", "Ashley", "Amanda",
+            "Emily", "Sarah", "Miguel", "Joshua", "Carlos", "David", "Isabel", "Megan",
+    ];
+
+    let random = rng.random_range(0..names.len());
+    cadena.push_str(names[random]);
+    cadena
+}
+
+pub fn get_mdl_lst_name()->String{
+    let mut rng: rand::prelude::ThreadRng = rand::rng();
+    let mut cadena:String = String::from("");
+    let mdl_lst_name: Vec<&str> = vec![
+            "Pérez", "Smith", "García", "Smith", "Rodríguez", "Johnson", "Hernández", "Thompson",
+            "Williams", "Martínez", "Brown", "Martínez", "Jones", "González", "Davis","López",
+            "Smith", "Miller", "Ramírez", "Martinez", "González", "Davis", "Martínez", "White",
+            "Anderson", "Williams", "Rodriguez", "Jiménez", "Taylor", "Pérez", "Anderson", "Miller",
+            "Hernández", "Thomas", "Jones", "Jackson", "García", "Jackson", "Sánchez","Lee",
+            "Gómez", "Johnson", "López", "Johnson", "López", "Williams", "Martínez", "Brown",
+            "Hernández", "Jones", "González", "Davis", "Sánchez", "Miller", "Johnson", "Wilson",
+            "Torres", "Garcia", "Pérez", "Garcia", "Díaz", "Martinez", "Brown", "Martinez",
+            "Cruz", "Hernandez", "Sánchez", "Thomas", "Mora", "Moore", "Davis", "White",
+            "Fernández", "Martin", "Ramírez", "Moore", "Ramírez", "Lee", "Wilson", "Clark"
+    ];  
+    let random = rng.random_range(0..mdl_lst_name.len());
+    cadena.push_str(mdl_lst_name[random]);
+    cadena
+}        
+
+pub fn get_addres()->String{
+    let mut rng: rand::prelude::ThreadRng = rand::rng();
+    let mut cadena:String = String::from("");
+    let address: Vec<&str> = vec![
+            "Avenida Reforma 123, Ciudad de México, CDMX", "123 Main Street, New York, NY","789 Pine Avenue, Chicago, IL",
+            "Calle Principal 123, Ciudad de México, México","123 Main St, Anytown, CA, USA","Av. Reforma 456, Guadalajara, México",
+            "1234 Elm Street, Los Ángeles, CA", "456 Oak Road, Los Angeles, CA","123 Main St, Los Angeles, CA, USA",
+            "456 Oak Ave, Springfield, IL, USA","Calle 5 de Febrero 456, Monterrey, Nuevo León", "789 Pine Ln, Riverside, TX, USA",
+            "Carretera Panamericana 789, Guadalajara, Jalisco", "321 Maple Lane, Houston, TX","456 Oak Ave, New York, NY, USA",
+            "101 Elm Rd, Greenville, NY, USA","Av. de los Insurgentes Sur 101, Ciudad de México, CDMX","123 Oak Avenue, Houston, TX",
+            "654 Cedar Drive, Phoenix, AZ","Calle Hidalgo 789, Monterrey, México","202 Maple Dr, Sunnyvale, WA, USA",
+            "987 Birch Street, Miami, FL","789 Pine Ln, Chicago, IL, USA", "Calle Hidalgo 789, Puebla, Puebla", "123 Elm Street, San Francisco, CA",
+            "303 Birch St, Pleasantville, FL, USA", "Av. Juárez 101, Puebla, México", "404 Cedar Ave, Harmonyville, MI, USA",
+           "Callejón del Sol 345, Monterrey, Nuevo León", "Boulevard Juárez 678, Tijuana, Baja California", "707 Sequoia Dr, Tranquil Town, OR, USA",
+            "234 Pinecrest Road, Dallas, TX","101 Elm Rd, Houston, TX, USA","505 Willow Ln, Peaceful Pines, AZ, USA","890 Rosewood Avenue, Austin, TX","202 Maple Dr, Phoenix, AZ, USA",
+            "567 Maple Lane, Seattle, WA","Calle Morelos 202, Tijuana, México","606 Redwood Rd, Serenity Springs, CO, USA","8th Avenue 234, New York, NY",
+    ]; 
+    let random = rng.random_range(0..address.len());
+    cadena.push_str(address[random]);
+    cadena
+}        
+    
+pub fn get_movil()->String{
+    let mut rng: rand::prelude::ThreadRng = rand::rng();
+    let mut cadena:String = String::from("");
+    let movil: Vec<&str> = vec![
+        "555-1234",     "212-555-1234",  "525512345678",   "15551234567",
+        "323-5678",     "323-555-2345",  "12135551212",    "15559876543",
+        "818-9012",     "312-555-3456",  "523398765432",   "15551122334",
+        "33-2233-4455", "713-555-4567",  "12125551212",    "15554455667",
+        "55-1234-5678", "602-555-5678",  "528123456789",   "15557788990",
+        "713-9087",     "305-555-6789",  "13125551212",    "15552233445",
+        "222-3344",     "415-555-7890",  "522221234567",   "15555566778",
+        "818-2345",     "214-555-8901",  "17135551212",    "15558899001",
+        "664-3456",     "206-555-9012",  "526649876543",   "15553344556",
+        "212-5678",     "512-555-0123",  "16025551212",    "15556677889",
+    ];
+    let random = rng.random_range(0..movil.len());
+    cadena.push_str(movil[random]);
+    cadena
+}  
+
+pub fn get_email()->String{
+    let mut rng: rand::prelude::ThreadRng = rand::rng();
+    let mut cadena:String = String::from("");
+    let email: Vec<&str> = vec![
+            "juan.perez@email.com", "maria.garcia@example.com", "james.smith@email.com", "john.smith@example.com",
+            "maria.rodriguez@email.com", "juan.hernandez@example.com", "emily.johnson@email.com", "emily.williams@example.com",
+            "carlos.martinez@email.com", "ana.martinez@example.com", "michael.brown@email.com", "michael.jones@example.com",
+            "ana.gonzalez@email.com", "david.smith@example.com", "sarah.davis@email.com", "ashley.miller@example.com",
+            "luis.ramirez@email.com", "laura.gonzalez@example.com", "david.martinez@email.com", "christopher.davis@example.com",
+            "sofia.martinez@email.com", "michael.williams@example.com", "jessica.anderson@email.com", "jessica.rodriguez@example.com",
+            "pedro.jimenez@email.com", "sofia.perez@example.com", "christopher.taylor@email.com", "matthew.anderson@example.com",
+            "laura.hernandez@email.com", "emily.jones@example.com", "ashley.thomas@email.com", "sarah.jackson@example.com",
+            "miguel.garcia@email.com", "carlos.sanchez@example.com", "joshua.jackson@email.com", "david.thompson@example.com",
+            "isabel.lopez@email.com", "daniel.miller@example.com", "megan.white@email.com", "amanda.lee@example.com"
+    ];
+    let random = rng.random_range(0..email.len());
+    cadena.push_str( &( get_token(5, false) + email[random] ) );
+    cadena
+}  
+
+pub fn get_date(separador: String)->String{
+
+    let mut rng: rand::prelude::ThreadRng = rand::rng();
+    let mut cadena:String = String::from("");
+    let sep = separador;
+    let year: Vec<&str> = vec![ "2020", "2021", "2022", "2023", "2024", "2025"];
+    let mont: Vec<&str> = vec![ "01","02","03","04","05","06","07","08","09","10","11","12" ];
+    let day:  Vec<&str> = vec![ "01","02","03","04","05","06","08","09","10","11","12",
+                                "13","14","15","16","17","18","19","20","21","22","23",
+                                "24","25","26","27","28","29","30" ];
+    
+    let mut random = rng.random_range(0..year.len());
+    cadena.push_str(year[random]);
+    cadena.push_str(&sep);
+
+    random = rng.random_range(0..mont.len());
+    cadena.push_str(mont[random]);
+    cadena.push_str(&sep);
+
+    if random == 1{
+        random = rng.random_range(0..25);    
+    }else{
+        random = rng.random_range(0..day.len());
+    }
+    
+    cadena.push_str(day[random]);
+
+    cadena
+}  
+
+pub fn get_rand_words()->String{
+    let mut rng: rand::prelude::ThreadRng = rand::rng();
+    let mut cadena:String = String::from("");
+    let word: Vec<&str> = vec!["sol", "estrella", "luna", "gato", "perro", "rojo", "flor", 
+        "montaña", "playa", "viento", "piedra", "agua", "camino", "noche", "cielo", "amigo", 
+        "familia", "feliz", "árbol", "río", "solución", "fuego", "café", "bici", "piedra", 
+        "sueño", "música", "carro", "viaje", "paz", "salud", "luz", "libro", "puente", "ciudad", 
+        "fútbol", "balón", "guitarra", "verde", "rojo", "amor", "nieve", "hielo", "flor", "viento", 
+        "pasión", "sombra", "amigo", "brisa", "cielo", "mar", "risa"];
+    let random = rng.random_range(0..word.len());
+    cadena.push_str(word[random]);
+    cadena
+}
+
+   
+pub fn get_inserts(db: String, tabla:String, num_reg:usize){
+
+    if num_reg < 200 {
+        insertor(num_reg);
+        println!("Insertando: {}", num_reg);
+    }else{
+
+        let mut exec_num =  num_reg as f32/200f32;
+
+        exec_num = exec_num.floor();
+
+        println!("Se insertarán {}", exec_num * 200f32);
+
+        for i in 0 .. exec_num as usize{
+            println!("Insertando: {} de {}", i * 200,  exec_num as f32 * 200f32);
+            insertor(200);
+        }
+
+        println!("Insertando: {} de {}", exec_num as f32 * 200f32,  exec_num as f32 * 200f32);
+    }
 
 }
 
-// QUERYS
+pub fn insertor(num_reg: usize){    
+    // INSERT MYSQL
 
-    /*
-    let query: String = String::from("    
-        INSERT INTO pltfrm_laravel.tiendas (id, created_at, updated_at, id_companie, `zone`, edo, name, address, deptos, sells_gral, average_mont)VALUES
-        (10,'2024-12-02', '2025-01-05', 101, 1, 1, 'Tienda Norte', 'Calle Norte 150, Zócalo',                     '{\"horario\": \"10:00-18:00\", \"ofertas\": [\"descuento 80%\", \"envío gratuito\"]}', 150500.20, 1500.20),
-        (11,'2024-11-25', '2025-01-10', 50, 200, 1, 'Tienda Sur', 'Calle Sur 200, Centro',                            '{\"horario\": \"09:00-19:00\", \"ofertas\": [\"descuento 50%\", \"compra uno y lleva otro gratis\"]}', 50000.99, 500.99),
-        (12,'2024-10-15', '2025-02-01', 80, 300, 1, 'ElectroMax', 'Avenida Central 350, Zona Comercial',              '{\"horario\": \"11:00-21:00\", \"ofertas\": [\"descuento 20%\", \"envío gratuito en compras mayores a $1000\"]}', 120000.00, 200.50),
-        (13, '2024-09-10', '2025-03-05', 200, 500, 0, 'Ropa y Más', 'Calle de la Paz 400, Ciudad Nueva',               '{\"horario\": \"10:00-18:00\", \"ofertas\": [\"descuento 10%\", \"envío 50% off\"]}', 95000.75, 120.00),
-        (14, '2024-08-20', '2025-04-10', 35, 150, 1, 'Juguetería El Mundo', 'Calle Mayor 250, Colonia Este',           '{\"horario\": \"10:00-19:00\", \"ofertas\": [\"descuento 15%\", \"compra 2 y llévate otro gratis\"]}', 23000.45, 300.99),
-        (15, '2024-07-30', '2025-05-15', 60, 250, 1, 'Tecnología Pro', 'Avenida Reforma 150, Edificio A',              '{\"horario\": \"09:00-20:00\", \"ofertas\": [\"descuento 25%\", \"envío gratuito\"]}', 80000.00, 150.00),
-        (16, '2024-06-25', '2025-06-10', 120, 400, 0, 'Deportes y Más', 'Calle del Sol 500, Parque Industrial',        '{\"horario\": \"08:00-20:00\", \"ofertas\": [\"descuento 5%\",  \"20% extra en productos de temporada\"]}', 45000.25, 500.00),
-        (17, '2024-05-15', '2025-07-01', 75, 350, 1, 'Supermercado El Buen Sabor', 'Calle Larga 125, Mercado Central', '{\"horario\": \"07:00-23:00\", \"ofertas\": [\"descuento 30%\", \"oferta especial en productos locales\"]}', 350000.50, 800.00),
-        (18, '2024-04-10', '2025-07-15', 15, 100, 1, 'Tienda Online', 'No Aplica Dirección, Online',                   '{\"horario\": \"24/7\",        \"ofertas\": [\"descuento 50%\", \"envío gratis en compras mayores a $500\"]}', 120000.00, 100.00),
-        (19, '2024-03-01', '2025-08-01', 90, 450, 1, 'Fabrica de Calzado', 'Calle Zapatos 50, Barrio Obrero',          '{\"horario\": \"10:00-18:00\", \"ofertas\": [\"descuento 40%\", \"compra uno y llévate el segundo a mitad de precio\"]}', 70000.40, 400.00);
-    "); 
-*/
+    let db = "pltfrm_laravel" ;
+    let tabla  = "users";
+    let mut stringtmp: String = 
+             format!(  "INSERT INTO {}.{} 
+             ( name, email, password, remember_token, email_verified_at, created_at, updated_at )
+               VALUES", db, tabla  );
 
-// C:\Program Files\MariaDB 11.3\bin\mysql.exe
-// mysql -u root -e "SELECT * FROM  local.migrations;"
+            for i in 1 ..=num_reg{
+                let name: String = "( '".to_string() + &get_name()+ &" ".to_string() + &get_mdl_lst_name() + &" ".to_string() + &get_mdl_lst_name() + &"'".to_string();
+                stringtmp.push_str(&name);
+                stringtmp.push_str(",");
+                stringtmp.push_str(&( "'".to_string() + &get_email() + &"'".to_string() ) );
+                stringtmp.push_str(",");
+                stringtmp.push_str(&( "'".to_string() + &get_token(12, true) + &"'".to_string()) );
+                stringtmp.push_str(",");
+                stringtmp.push_str(&( "'".to_string() + &get_rand_words() + &"'".to_string()) );
+                stringtmp.push_str(",");
+                stringtmp.push_str(&( "'".to_string() + &get_date("-".to_string()) + &"'".to_string()  ) );
+                stringtmp.push_str(",");
+                stringtmp.push_str(&( "'".to_string() + &get_date("-".to_string()) + &"'".to_string() ) );
+                stringtmp.push_str(",");
+                stringtmp.push_str(&( "'".to_string() + &get_date("-".to_string()) + &"'".to_string()) );
+                if i == num_reg {
+                    stringtmp.push_str(");\n");    
+                }else{
+                    stringtmp.push_str("),\n");
+                }
+                
+            }
+
+            let commando = Command::new("mysql")
+            .arg("-u")
+            .arg("root")
+            .arg("-e")
+            .arg(stringtmp)
+            .output()
+            .expect("Falló al ejecutar el comando");
+
+            // success?
+            if commando.status.success() {
+                // Si la ejecución fue exitosa, mostramos la salida
+                println!("{}", String::from_utf8_lossy(&commando.stdout));
+            } else {
+                // Si ocurrió un error, mostramos el error
+                eprintln!("Error al ejecutar el comando MySQL:");
+                eprintln!("{}", String::from_utf8_lossy(&commando.stderr));
+                exit(1); // Salir con código de error 1
+            }
+
+}
